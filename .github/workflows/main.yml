@@ -15,5 +15,7 @@ jobs:
        java-version: '17'
        distribution: 'temurin'
        cache: maven
-    - name: build the java code 
-      run: mvn clean install package
+    - name: Scan the source code using sonarqube
+      run: mvn -B verify sonar:sonar -Dsonar.projectKey=sonar-jenkins-sonal-demo19june_sonar-jenkins-sonal-poject-19june -Dsonar.organization=sonar-jenkins-sonal-demo19june -Dsonar.host.url=https://sonarcloud.io -Dsonar.token=$SONAR_TOKEN
+      env:
+       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN}}
