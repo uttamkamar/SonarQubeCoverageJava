@@ -1,21 +1,22 @@
 name: Build Java Application
 
+# 🚀 Trigger workflow on push to master branch
 on:
   push:
     branches:
       - master
 
 jobs:
-  job1:
-    name: 🔍 Build & Scan with SonarQube
+  build-and-scan:
+    name: 🔍 Build & Scan with SonarCloud
     runs-on: ubuntu-latest
 
     steps:
-      # ✅ Step 1: Clone the repository
-      - name: Clone the repository
+      # 📥 Step 1: Clone the repository
+      - name: Checkout code
         uses: actions/checkout@v4.2.2
 
-      # ✅ Step 2: Install Java 17
+      # ☕ Step 2: Set up Java 17 with Maven cache
       - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
@@ -23,13 +24,11 @@ jobs:
           distribution: "temurin"
           cache: maven
 
-      # ✅ Step 3: Run SonarQube (SonarCloud) scan
-      - name: Scan the source code using SonarCloud
-        run: mvn -B verify sonar:sonar \
-          -Dsonar.projectKey=sonar-jenkins-uttam_sonar-jenkins-project \
-          -Dsonar.organization=sonar-jenkins-uttam \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-        # env:
-          # This is redundant now; sonar.login is passed above.
-          # SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # 🔍 Step 3: Build the project and run SonarCloud analysis
+      - name: Run SonarCloud Scan
+        run: |
+          mvn -B verify sonar:sonar \
+            -Dsonar.projectKey=sonar-jenkins-uttam_sonar-jenkins-project \
+            -Dsonar.organization=sonar-jenkins-uttam \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
