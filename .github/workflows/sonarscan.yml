@@ -1,0 +1,21 @@
+name: build java Application
+on:
+  push:
+    branches:
+      - master
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone the repo
+        uses: actions/checkout@v4.2.2
+      - name: Install java 17
+        uses: actions/setup-node@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+          cache: maven
+      - name: Scan the source code using sonarqube
+        run: mvn -B verify sonar:sonar -Dsonar.projectkey=sonar-jenkins-uttam_sonar-jenkins-project -Dsonar.organization=sonar-jenkins-uttam -Dsonar.host.url=https://sonarcloud.io -Dsonar.token=$SONAR_TOKEN
+        env:
+          SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
