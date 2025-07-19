@@ -1,21 +1,35 @@
-name: build java Application
+name: Build Java Application
+
 on:
   push:
     branches:
       - master
+
 jobs:
   job1:
+    name: 🔍 Build & Scan with SonarQube
     runs-on: ubuntu-latest
+
     steps:
-      - name: Clone the repo
+      # ✅ Step 1: Clone the repository
+      - name: Clone the repository
         uses: actions/checkout@v4.2.2
-      - name: Install java 17
-        uses: actions/setup-node@v4
+
+      # ✅ Step 2: Install Java 17
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
         with:
           java-version: "17"
           distribution: "temurin"
           cache: maven
-      - name: Scan the source code using sonarqube
-        run: mvn -B verify sonar:sonar -Dsonar.projectkey=sonar-jenkins-uttam_sonar-jenkins-project -Dsonar.organization=sonar-jenkins-uttam -Dsonar.host.url=https://sonarcloud.io -Dsonar.token=$SONAR_TOKEN
-        env:
-          SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
+
+      # ✅ Step 3: Run SonarQube (SonarCloud) scan
+      - name: Scan the source code using SonarCloud
+        run: mvn -B verify sonar:sonar \
+          -Dsonar.projectKey=sonar-jenkins-uttam_sonar-jenkins-project \
+          -Dsonar.organization=sonar-jenkins-uttam \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        # env:
+          # This is redundant now; sonar.login is passed above.
+          # SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
